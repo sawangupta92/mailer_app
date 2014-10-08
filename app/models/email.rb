@@ -7,12 +7,10 @@ class Email < ActiveRecord::Base
   validate do
     range less_than_or_equal_to: max
   end
-  validate :number_of_reciepients
   before_save :check_for_spam
   after_save :add_contact
 
   def add_contact
-    debugger
   end
 
   def check_for_spam
@@ -41,7 +39,6 @@ class Email < ActiveRecord::Base
 
   def number_of_emails
     mb = Mailbox.find_by_id(self.sender_mailbox_id)
-    debugger
     if mb.number_of_mails_send > 10
       errors.add 'max limit reached'
     else

@@ -1,5 +1,5 @@
 class AddContactIdToMailbox < ActiveRecord::Migration
   def change
-    belongs_to :contacts
+    add_column :mailboxes, :contact_id, :integer
   end
 end

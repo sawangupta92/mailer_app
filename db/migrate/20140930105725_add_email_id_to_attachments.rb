@@ -1,5 +1,5 @@
 class AddEmailIdToAttachments < ActiveRecord::Migration
   def change
-    belongs_to :emails
+    add_column :attachments, :email_id, :integer
   end
 end
