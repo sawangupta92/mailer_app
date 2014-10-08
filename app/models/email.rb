@@ -9,6 +9,11 @@ class Email < ActiveRecord::Base
   end
   validate :number_of_reciepients
   before_save :check_for_spam
+  after_save :add_contact
+
+  def add_contact
+    debugger
+  end
 
   def check_for_spam
     if self.attachments.any? {|att| att.type == 'Audio'}
@@ -29,13 +34,14 @@ class Email < ActiveRecord::Base
   end
 
   def number_of_reciepients
-    if mailbox.nil?
+    if mailbox.size > 0
       errors.add 'max number of reciepients limit reached'
     end
   end
 
   def number_of_emails
     mb = Mailbox.find_by_id(self.sender_mailbox_id)
+    debugger
     if mb.number_of_mails_send > 10
       errors.add 'max limit reached'
     else
