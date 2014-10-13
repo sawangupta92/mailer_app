@@ -9,7 +9,7 @@ class Mailbox < ActiveRecord::Base
 
   def check_for_spam
     # FIXME_AK: Refactor this method done
-    emails.all? { |em| em.tag == 'spam' }
+    emails.all? { |email| email.tag == 'spam' }
   end
 
 end
