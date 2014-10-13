@@ -12,9 +12,9 @@ class Email < ActiveRecord::Base
   before_save :check_for_spam, :recipient_limit_reached?, :default_subject
   after_save :add_contact, :add_log_entry
 
-  def number_of_emails    
-    mailbox = Mailbox.find_by_id(self.sender_mailbox_id)
-    if mailbox.emails.size > 10
+  def number_of_emails
+    mailboxes = Mailbox.find_by_id(mailbox)
+    if mailboxes.emails.size > 10
       errors.add :base, 'max limit reached'
       false
     end
