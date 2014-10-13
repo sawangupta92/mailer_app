@@ -1,52 +1,58 @@
 class Email < ActiveRecord::Base
-  # FIXME_AK: Reorder the statements.
-  # FIXME_AK: Clashing of the associations.
+  # FIXME_AK: Reorder the statements. done
+  # FIXME_AK: Clashing of the associations. done
   belongs_to :mailbox, foreign_key: 'sender_mailbox_id'
-  # FIXME_AK: name must be pluralized here.
-  has_and_belongs_to_many :mailbox
-  # FIXME_AK: do we need to preserve the attachments when email is destroyed?
-  has_many :attachments
-  validate :number_of_emails
-  before_save :subject_empty
-  validates :subject, numericality: {less_than_or_equal_to: max}
-  before_save :check_for_spam
-  after_save :add_contact
+  # FIXME_AK: do we need to preserve the attachments when email is destroyed? done
+  has_many :attachments, dependent: :destroy
+  # FIXME_AK: name must be pluralized here. done
+  has_and_belongs_to_many :mailboxes
 
-  def add_contact
+  validate :number_of_emails
+
+  before_save :check_for_spam, :recipient_limit_reached?, :default_subject
+  after_save :add_contact, :add_log_entry
+
+  def number_of_emails    
+    mailbox = Mailbox.find_by_id(self.sender_mailbox_id)
+    if mailbox.emails.size > 10
+      errors.add :base, 'max limit reached'
+      false
+    end
+  end
+
+  def default_subject
+    if subject.nil?
+      self.subject = 'This is default subject'
+    end
   end
 
   def check_for_spam
-    # FIXME_AK: Refactor this method.
-    # FIXME_AK: no need for self.
-    if self.attachments.any? {|att| att.type == 'Audio'}
-      self.tag = 'spam'
-    else
-      self.tag = 'normal'
+    # FIXME_AK: Refactor this method. done
+    # FIXME_AK: no need for self. done
+    attachments.any? {|attachment| attachment.type == 'Audio'} ? self.tag = 'spam' : self.tag = 'normal'
+  end
+
+  # FIXME_AK: naming. done
+  # FIXME_AK: ditto for above. done
+  def recipient_limit_reached?
+    if mailboxes.size > 20
+      errors.add :base, 'max number of reciepients limit reached'
+      false
     end
   end
 
-  def subject_empty
-    # FIXME_AK: naming for the method.
-    # FIXME_AK: retturn value.
-    if subject.nil?
-      errors.add 'no subject was given'
-    end
+  def add_log_entry
+    Log.create(email_id: id)
   end
 
-  # FIXME_AK: naming.
-  # FIXME_AK: ditto for above.
-  def number_of_reciepients
-    if mailbox.size > 0
-      errors.add 'max number of reciepients limit reached'
-    end
-  end
-
-  def number_of_emails
-    mb = Mailbox.find_by_id(self.sender_mailbox_id)
-    if mb.number_of_mails_send > 10
-      errors.add 'max limit reached'
-    else
-      Mailbox.increment_counter(:number_of_mails_send, mb.id)
+  def add_contact
+    if tag == 'normal'
+      mailboxes.each do |mailbox|
+        if mailbox.contacts.none? { |contact| contact.mailbox_id == mailbox.id }
+          mailbox.contacts
+          mailbox.contacts.create()
+        end
+      end
     end
   end
 

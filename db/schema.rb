@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141006090831) do
+ActiveRecord::Schema.define(version: 20141012185134) do
 
   create_table "attachments", force: true do |t|
     t.string   "type"
@@ -46,6 +46,12 @@ ActiveRecord::Schema.define(version: 20141006090831) do
   create_table "emails_mailboxes", force: true do |t|
     t.integer  "email_id"
     t.integer  "mailbox_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "logs", force: true do |t|
+    t.integer  "email_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

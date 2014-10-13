@@ -1,5 +1,4 @@
-# FIXME_AK: Whta is the purpose of inheritance_column?
+# FIXME_AK: Whta is the purpose of inheritance_column? fixed
 class Attachment < ActiveRecord::Base
   belongs_to :email
-  self.inheritance_column = :type
 end
