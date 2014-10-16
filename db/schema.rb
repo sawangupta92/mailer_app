@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141012185134) do
+ActiveRecord::Schema.define(version: 20141014170217) do
 
   create_table "attachments", force: true do |t|
     t.string   "type"
@@ -41,13 +41,7 @@ ActiveRecord::Schema.define(version: 20141012185134) do
     t.string   "subject"
     t.integer  "max",                 default: 4
     t.string   "tag"
-  end
-
-  create_table "emails_mailboxes", force: true do |t|
-    t.integer  "email_id"
     t.integer  "mailbox_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "logs", force: true do |t|
@@ -63,6 +57,13 @@ ActiveRecord::Schema.define(version: 20141012185134) do
     t.string   "first_name"
     t.string   "last_name"
     t.integer  "number_of_mails_send", default: 0
+  end
+
+  create_table "recievers", force: true do |t|
+    t.integer  "email_id"
+    t.integer  "mailbox_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
 end

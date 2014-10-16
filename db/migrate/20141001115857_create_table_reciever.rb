@@ -1,6 +1,6 @@
-class CreateTableEmailMailboxes < ActiveRecord::Migration
+class CreateTableReciever < ActiveRecord::Migration
   def change
-    create_table :emails_mailboxes do |t|
+    create_table :recievers do |t|
       t.belongs_to :email
       t.belongs_to :mailbox
       t.timestamps
