@@ -3,11 +3,14 @@ class Email < ActiveRecord::Base
   # FIXME_AK: Clashing of the associations. done
   belongs_to :mailbox
   # FIXME_AK: do we need to preserve the attachments when email is destroyed? done
-  has_many :attachments, dependent: :destroy
+  has_many :attachments, dependent: :destroy do
+    def find_names
+      pluck(:file_name)
+    end
+  end
   # FIXME_AK: name must be pluralized here. done
-  # has_and_belongs_to_many :mailboxes
-  has_many :replies, class_name: :Email
-  has_many :recievers, dependent: :destroy
+  has_many :replies, class_name: :Email, dependent: :destroy
+  has_many :recievers
   has_many :recieving_mailboxes, source: :mailbox, through: :recievers
 
   validate :number_of_emails
